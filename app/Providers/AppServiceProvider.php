@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Faculty;
+use App\Observers\FacultyObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +25,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
     }
 }

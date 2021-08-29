@@ -21,16 +21,17 @@ Route::redirect('/', '/login', 301);
 Auth::routes(['verify' => true]);
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::middleware(['role:administrator'])->group(function () {
-        Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
-        Route::resource('mahasiswa', MahasiswaController::class);
-        Route::resource('fakultas', FacultyController::class);
-        Route::resource('program-studi', ProgramStudyController::class);
-        Route::resource('tahun-ajaran', SchoolYearController::class);
-        Route::resource('mata-kuliah', CourseController::class);
-        Route::resource('krs', KrsController::class);
+        Route::resource('students', MahasiswaController::class);
+        Route::delete('/faculties/restore/{faculty}', [FacultyController::class, 'restore'])->name('faculties.restore');
+        Route::resource('faculties', FacultyController::class)->except(['show']);
+        Route::resource('program-studies', ProgramStudyController::class);
+        Route::resource('school-years', SchoolYearController::class);
+        Route::resource('courses', CourseController::class);
+        Route::resource('study-plan-cards', KrsController::class);
     });
 
     Route::middleware(['role:mahasiswa'])->group(function () {

@@ -47,15 +47,4 @@ class LoginController extends Controller
     {
         return 'nim';
     }
-    protected function authenticated(Request $request)
-    {
-        return $this->redirectTo($request);
-    }
-    public function redirectTo($request)
-    {
-        if ($request->user()->hasRole('administrator')) {
-            return redirect()->route('dashboard');
-        }
-        return redirect()->route('mahasiswa');
-    }
 }
