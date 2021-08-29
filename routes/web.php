@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\{DashboardController, CourseController, FacultyController, KrsController, MahasiswaController, ProgramStudyController, SchoolYearController};
+use App\Models\ProgramStudy;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('students', MahasiswaController::class);
         Route::delete('/faculties/restore/{faculty}', [FacultyController::class, 'restore'])->name('faculties.restore');
         Route::resource('faculties', FacultyController::class)->except(['show']);
+        Route::delete('/program-studies/restore/{program_study}', [ProgramStudyController::class, 'restore'])->name('program-studies.restore');
         Route::resource('program-studies', ProgramStudyController::class);
         Route::resource('school-years', SchoolYearController::class);
         Route::resource('courses', CourseController::class);

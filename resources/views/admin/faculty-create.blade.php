@@ -6,7 +6,7 @@
             <div class="col-md-10">
                 <a href="{{ route('faculties.index') }}" class="btn btn-primary mb-2">Lihat Data</a>
                 <div class="card">
-                    <div class="card-header">{{ __('Data Fakultas') }}</div>
+                    <div class="card-header">{{ __('Tambah Fakultas') }}</div>
                     <div class="card-body">
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">

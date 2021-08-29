@@ -24,4 +24,8 @@ class Faculty extends Model
             $query->fakultas = Str::title($query->fakultas);
         });
     }
+    public function program_study()
+    {
+        return $this->hasMany(ProgramStudy::class);
+    }
 }

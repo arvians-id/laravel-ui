@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\ProgramStudy;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
+use App\Http\Controllers\Controller;
+use App\Models\Faculty;
 
 class ProgramStudyController extends Controller
 {
@@ -13,9 +15,36 @@ class ProgramStudyController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $programStudies = ProgramStudy::withTrashed()->latest();
+        if ($request->ajax()) {
+            return DataTables::of($programStudies)
+                ->addColumn('fakultas', function ($query) {
+                    return $query->faculty->fakultas;
+                })
+                ->addColumn('created_at', function ($query) {
+                    return $query->created_at->format('d F Y h:i:s');
+                })
+                ->addColumn('updated_at', function ($query) {
+                    return $query->updated_at->format('d F Y h:i:s');
+                })
+                ->addColumn('deleted_at', function ($query) {
+                    return $query->deleted_at == null ? 'Aktif' : 'Tidak Aktif';
+                })
+                ->addColumn('aksi', function ($query) {
+                    $btn = '<a href="' . route('program-studies.edit', ['program_study' => $query->id]) . '" class="btn btn-warning btn-sm">Ubah</a>
+                            <form action="' . route($query->trashed() ? 'program-studies.restore' : 'program-studies.destroy', ['program_study' => $query->id]) . '" class="d-inline" method="POST">
+                            ' . method_field('DELETE') . csrf_field() . '
+                                <button class="btn btn-danger btn-sm">' . ($query->trashed() ? "Aktifkan" : "Nonaktifkan") . '</button>
+                            </form>';
+
+                    return $btn;
+                })
+                ->rawColumns(['aksi'])
+                ->toJson();
+        }
+        return view('admin.program-study', compact($programStudies));
     }
 
     /**
@@ -25,7 +54,8 @@ class ProgramStudyController extends Controller
      */
     public function create()
     {
-        //
+        $faculties = Faculty::get();
+        return view('admin.program-study-create', compact('faculties'));
     }
 
     /**
@@ -36,18 +66,13 @@ class ProgramStudyController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $forms = $request->validate([
+            'faculty_id' => 'required',
+            'program_studi' => 'required|unique:program_studies'
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\ProgramStudy  $programStudy
-     * @return \Illuminate\Http\Response
-     */
-    public function show(ProgramStudy $programStudy)
-    {
-        //
+        ProgramStudy::create($forms);
+        return redirect()->route('program-studies.index')->with('status', 'Data berhasil ditambahkan!');
     }
 
     /**
@@ -58,7 +83,8 @@ class ProgramStudyController extends Controller
      */
     public function edit(ProgramStudy $programStudy)
     {
-        //
+        $faculties = Faculty::get();
+        return view('admin.program-study-create', compact('programStudy', 'faculties'));
     }
 
     /**
@@ -70,7 +96,13 @@ class ProgramStudyController extends Controller
      */
     public function update(Request $request, ProgramStudy $programStudy)
     {
-        //
+        $forms = $request->validate([
+            'faculty_id' => 'required',
+            'program_studi' => 'required|unique:program_studies,program_studi,' . $programStudy->id
+        ]);
+
+        ProgramStudy::findOrFail($programStudy->id)->update($forms);
+        return redirect()->route('program-studies.index')->with('status', 'Data berhasil diubah!');
     }
 
     /**
@@ -81,6 +113,21 @@ class ProgramStudyController extends Controller
      */
     public function destroy(ProgramStudy $programStudy)
     {
-        //
+        ProgramStudy::findOrFail($programStudy->id)->delete();
+
+        return back()->with('status', 'Data berhasil dinonaktifkan!');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\ProgramStudy  $programStudy
+     * @return \Illuminate\Http\Response
+     */
+    public function restore($programStudy)
+    {
+        ProgramStudy::where('id', $programStudy)->restore();
+
+        return back()->with('status', 'Data berhasil diaktifkan!');
     }
 }
