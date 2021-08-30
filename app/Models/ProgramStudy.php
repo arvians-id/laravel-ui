@@ -18,16 +18,13 @@ class ProgramStudy extends Model
     {
         parent::boot();
 
-        static::creating(function ($query) {
-            $query->program_studi = Str::title($query->program_studi);
-        });
-        static::updating(function ($query) {
+        static::saving(function ($query) {
             $query->program_studi = Str::title($query->program_studi);
         });
     }
 
     public function faculty()
     {
-        return $this->belongsTo(Faculty::class);
+        return $this->belongsTo(Faculty::class)->withTrashed();
     }
 }

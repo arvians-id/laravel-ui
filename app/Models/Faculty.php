@@ -17,11 +17,11 @@ class Faculty extends Model
     {
         parent::boot();
 
-        static::creating(function ($query) {
+        static::saving(function ($query) {
             $query->fakultas = Str::title($query->fakultas);
         });
-        static::updating(function ($query) {
-            $query->fakultas = Str::title($query->fakultas);
+        static::deleted(function ($query) {
+            $query->program_study()->delete();
         });
     }
     public function program_study()

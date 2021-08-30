@@ -39,7 +39,7 @@ class ProgramStudyController extends Controller
                                 <button class="btn btn-danger btn-sm">' . ($query->trashed() ? "Aktifkan" : "Nonaktifkan") . '</button>
                             </form>';
 
-                    return $btn;
+                    return $query->faculty->trashed() ? 'Fakultas dinonaktifkan' : $btn;
                 })
                 ->rawColumns(['aksi'])
                 ->toJson();

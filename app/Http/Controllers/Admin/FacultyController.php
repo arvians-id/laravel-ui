@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Faculty;
+use App\Models\ProgramStudy;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -119,6 +120,8 @@ class FacultyController extends Controller
     public function restore($faculty)
     {
         Faculty::where('id', $faculty)->restore();
+
+        ProgramStudy::where('faculty_id', $faculty)->restore();
 
         return back()->with('status', 'Data berhasil diaktifkan!');
     }

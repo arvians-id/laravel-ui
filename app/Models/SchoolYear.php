@@ -4,8 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SchoolYear extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+    public $fillable = ['tahun_ajaran', 'semester', 'is_active'];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function ($query) {
+            $query->delete();
+        });
+    }
 }

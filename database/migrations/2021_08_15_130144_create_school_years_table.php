@@ -17,7 +17,7 @@ class CreateSchoolYearsTable extends Migration
             $table->id();
             $table->string('tahun_ajaran', 10);
             $table->string('semester', 10);
-            $table->enum('is_active', ['0', '1']);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
