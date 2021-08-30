@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Course;
+use App\Models\User;
+use App\Models\ProgramStudy;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
-use App\Models\ProgramStudy;
 
-class CourseController extends Controller
+class StudentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,11 +17,14 @@ class CourseController extends Controller
      */
     public function index(Request $request)
     {
-        $courses = Course::withTrashed()->latest();
+        $students = User::withTrashed()->latest();
         if ($request->ajax()) {
-            return DataTables::of($courses)
+            return DataTables::of($students)
+                ->addColumn('fakultas', function ($query) {
+                    return $query->profil_user->faculty->fakultas;
+                })
                 ->addColumn('program_studi', function ($query) {
-                    return $query->program_study->program_studi;
+                    return $query->profil_user->program_study_id;
                 })
                 ->addColumn('created_at', function ($query) {
                     return $query->created_at->format('d F Y h:i:s');
@@ -33,8 +36,8 @@ class CourseController extends Controller
                     return $query->deleted_at == null ? 'Aktif' : 'Tidak Aktif';
                 })
                 ->addColumn('aksi', function ($query) {
-                    $btnUbah = '<a href="' . route('courses.edit', ['course' => $query->id]) . '" class="btn btn-warning btn-sm">Ubah</a>';
-                    $btn = ($query->trashed() ? null : $btnUbah) . '<form action="' . route($query->trashed() ? 'courses.restore' : 'courses.destroy', ['course' => $query->id]) . '" class="d-inline" method="POST">
+                    $btnUbah = '<a href="' . route('students.edit', ['student' => $query->id]) . '" class="btn btn-warning btn-sm">Ubah</a>';
+                    $btn = ($query->trashed() ? null : $btnUbah) . '<form action="' . route($query->trashed() ? 'students.restore' : 'students.destroy', ['student' => $query->id]) . '" class="d-inline" method="POST">
                             ' . method_field('DELETE') . csrf_field() . '
                                 <button class="btn btn-danger btn-sm">' . ($query->trashed() ? "Aktifkan" : "Nonaktifkan") . '</button>
                             </form>';
@@ -44,7 +47,7 @@ class CourseController extends Controller
                 ->rawColumns(['aksi'])
                 ->toJson();
         }
-        return view('admin.course', compact($courses));
+        return view('admin.student', compact($students));
     }
 
     /**
@@ -55,7 +58,7 @@ class CourseController extends Controller
     public function create()
     {
         $programStudies = ProgramStudy::get();
-        return view('admin.course-create', compact('programStudies'));
+        return view('admin.student-create', compact('programStudies'));
     }
 
     /**
@@ -68,59 +71,70 @@ class CourseController extends Controller
     {
         $forms = $request->validate([
             'program_study_id' => 'required',
-            'kode_matkul' => 'required|unique:courses',
-            'mata_kuliah' => 'required|unique:courses',
+            'kode_matkul' => 'required|unique:students',
+            'mata_kuliah' => 'required|unique:students',
             'sks' => 'required|numeric',
             'dosen_pengampu' => 'required',
         ]);
 
-        Course::create($forms);
-        return redirect()->route('courses.index')->with('status', 'Data berhasil ditambahkan!');
+        User::create($forms);
+        return redirect()->route('students.index')->with('status', 'Data berhasil ditambahkan!');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\User  $student
+     * @return \Illuminate\Http\Response
+     */
+    public function show(User $student)
+    {
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Course  $course
+     * @param  \App\Models\User  $student
      * @return \Illuminate\Http\Response
      */
-    public function edit(Course $course)
+    public function edit(User $student)
     {
         $programStudies = ProgramStudy::get();
-        return view('admin.course-create', compact('course', 'programStudies'));
+        return view('admin.student-create', compact('student', 'programStudies'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Course  $course
+     * @param  \App\Models\User  $student
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Course $course)
+    public function update(Request $request, User $student)
     {
         $forms = $request->validate([
             'program_study_id' => 'required',
-            'kode_matkul' => 'required|unique:courses,kode_matkul,' . $course->id,
-            'mata_kuliah' => 'required|unique:courses,mata_kuliah,' . $course->id,
+            'kode_matkul' => 'required|unique:students,kode_matkul,' . $student->id,
+            'mata_kuliah' => 'required|unique:students,mata_kuliah,' . $student->id,
             'sks' => 'required|numeric',
             'dosen_pengampu' => 'required',
-            'fakultas' => 'required|unique:courses'
+            'fakultas' => 'required|unique:students'
         ]);
 
-        Course::findOrFail($course->id)->update($forms);
+        User::findOrFail($student->id)->update($forms);
         return redirect()->route('faculties.index')->with('status', 'Data berhasil diubah!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Course  $course
+     * @param  \App\Models\User  $student
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Course $course)
+    public function destroy(User $student)
     {
-        Course::findOrFail($course->id)->delete();
+        User::findOrFail($student->id)->delete();
 
         return back()->with('status', 'Data berhasil dinonaktifkan!');
     }
@@ -128,14 +142,14 @@ class CourseController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Course  $course
+     * @param  \App\Models\User  $student
      * @return \Illuminate\Http\Response
      */
-    public function restore($course)
+    public function restore($student)
     {
-        Course::where('id', $course)->restore();
+        User::where('id', $student)->restore();
 
-        // ProgramStudy::where('course_id', $course)->restore();
+        // ProgramStudy::where('student_id', $student)->restore();
 
         return back()->with('status', 'Data berhasil diaktifkan!');
     }

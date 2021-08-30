@@ -29,8 +29,8 @@ class SchoolYearController extends Controller
                     return $query->deleted_at == null ? 'Aktif' : 'Tidak Aktif';
                 })
                 ->addColumn('aksi', function ($query) {
-                    $btn = '<a href="' . route('school-years.edit', ['school_year' => $query->id]) . '" class="btn btn-warning btn-sm">Ubah</a>
-                            <form action="' . route($query->trashed() ? 'school-years.restore' : 'school-years.destroy', ['school_year' => $query->id]) . '" class="d-inline" method="POST">
+                    $btnUbah = '<a href="' . route('school-years.edit', ['school_year' => $query->id]) . '" class="btn btn-warning btn-sm">Ubah</a>';
+                    $btn = ($query->trashed() ? null : $btnUbah) . '<form action="' . route($query->trashed() ? 'school-years.restore' : 'school-years.destroy', ['school_year' => $query->id]) . '" class="d-inline" method="POST">
                             ' . method_field('DELETE') . csrf_field() . '
                                 <button class="btn btn-danger btn-sm">' . ($query->trashed() ? "Aktifkan" : "Nonaktifkan") . '</button>
                             </form>';

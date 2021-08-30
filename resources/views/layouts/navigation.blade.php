@@ -6,6 +6,9 @@
             <a class="nav-link" href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" href="{{ route('students.index') }}">{{ __('Mahasiswa') }}</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="{{ route('faculties.index') }}">{{ __('Fakultas') }}</a>
         </li>
         <li class="nav-item">

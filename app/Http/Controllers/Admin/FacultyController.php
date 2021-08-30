@@ -30,8 +30,8 @@ class FacultyController extends Controller
                     return $query->deleted_at == null ? 'Aktif' : 'Tidak Aktif';
                 })
                 ->addColumn('aksi', function ($query) {
-                    $btn = '<a href="' . route('faculties.edit', ['faculty' => $query->id]) . '" class="btn btn-warning btn-sm">Ubah</a>
-                            <form action="' . route($query->trashed() ? 'faculties.restore' : 'faculties.destroy', ['faculty' => $query->id]) . '" class="d-inline" method="POST">
+                    $btnUbah = '<a href="' . route('faculties.edit', ['faculty' => $query->id]) . '" class="btn btn-warning btn-sm">Ubah</a>';
+                    $btn = ($query->trashed() ? null : $btnUbah) . '<form action="' . route($query->trashed() ? 'faculties.restore' : 'faculties.destroy', ['faculty' => $query->id]) . '" class="d-inline" method="POST">
                             ' . method_field('DELETE') . csrf_field() . '
                                 <button class="btn btn-danger btn-sm">' . ($query->trashed() ? "Aktifkan" : "Nonaktifkan") . '</button>
                             </form>';

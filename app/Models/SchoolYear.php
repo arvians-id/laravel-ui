@@ -11,13 +11,4 @@ class SchoolYear extends Model
     use HasFactory, SoftDeletes;
 
     public $fillable = ['tahun_ajaran', 'semester', 'is_active'];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saved(function ($query) {
-            $query->delete();
-        });
-    }
 }

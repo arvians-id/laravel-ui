@@ -16,4 +16,12 @@ class ProfileUser extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class);
+    }
+    public function program_study()
+    {
+        return $this->belongsTo(ProgramStudy::class);
+    }
 }

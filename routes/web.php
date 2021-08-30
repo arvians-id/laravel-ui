@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\{DashboardController, CourseController, FacultyController, KrsController, MahasiswaController, ProgramStudyController, SchoolYearController};
-use App\Models\ProgramStudy;
-use App\Models\SchoolYear;
+use App\Http\Controllers\Admin\{DashboardController, CourseController, FacultyController, KrsController, ProgramStudyController, SchoolYearController, StudentController};
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -26,15 +24,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::middleware(['role:administrator'])->group(function () {
-
-        Route::resource('students', MahasiswaController::class);
+        Route::resource('students', StudentController::class);
         Route::delete('/faculties/restore/{faculty}', [FacultyController::class, 'restore'])->name('faculties.restore');
         Route::resource('faculties', FacultyController::class)->except(['show']);
         Route::delete('/program-studies/restore/{program_study}', [ProgramStudyController::class, 'restore'])->name('program-studies.restore');
-        Route::resource('program-studies', ProgramStudyController::class)->except(['show']);;
+        Route::resource('program-studies', ProgramStudyController::class)->except(['show']);
         Route::delete('/school-years/restore/{school_year}', [SchoolYearController::class, 'restore'])->name('school-years.restore');
-        Route::resource('school-years', SchoolYearController::class)->except(['show']);;
-        Route::resource('courses', CourseController::class);
+        Route::resource('school-years', SchoolYearController::class)->except(['show']);
+        Route::delete('/courses/restore/{course}', [CourseController::class, 'restore'])->name('courses.restore');
+        Route::resource('courses', CourseController::class)->except(['show']);;
         Route::resource('study-plan-cards', KrsController::class);
     });
 

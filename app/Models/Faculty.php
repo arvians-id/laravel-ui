@@ -13,19 +13,12 @@ class Faculty extends Model
 
     public $fillable = ['fakultas'];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saving(function ($query) {
-            $query->fakultas = Str::title($query->fakultas);
-        });
-        static::deleted(function ($query) {
-            $query->program_study()->delete();
-        });
-    }
     public function program_study()
     {
         return $this->hasMany(ProgramStudy::class);
+    }
+    public function profil_user()
+    {
+        return $this->hasMany(ProfileUser::class);
     }
 }

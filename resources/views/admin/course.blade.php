@@ -4,9 +4,9 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <a href="{{ route('program-studies.create') }}" class="btn btn-primary mb-2">Tambah</a>
+                <a href="{{ route('courses.create') }}" class="btn btn-primary mb-2">Tambah</a>
                 <div class="card">
-                    <div class="card-header">{{ __('Data Program Studi') }}</div>
+                    <div class="card-header">{{ __('Data Mata Kuliah') }}</div>
                     <div class="card-body">
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">
@@ -16,8 +16,11 @@
                         <table id="myTable" class="table table-striped table-bordered display nowrap" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Fakultas</th>
-                                    <th>Program Studi</th>
+                                    <th>Program Study</th>
+                                    <th>Kode Matkul</th>
+                                    <th>Mata Kuliah</th>
+                                    <th>SKS</th>
+                                    <th>Dosen Pengampu</th>
                                     <th>Dibuat</th>
                                     <th>Terakhir diubah</th>
                                     <th>Status</th>
@@ -33,6 +36,7 @@
         </div>
     </div>
 @endsection
+
 
 @push('css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
@@ -51,13 +55,19 @@
                 serverSide: true,
                 processing: true,
                 ajax: {
-                    url: "{{ route('program-studies.index') }}",
+                    url: "{{ route('courses.index') }}",
                     type: 'GET'
                 },
                 columns: [{
-                    data: 'fakultas'
+                    data: 'program_studi',
                 }, {
-                    data: 'program_studi'
+                    data: 'kode_matkul',
+                }, {
+                    data: 'mata_kuliah',
+                }, {
+                    data: 'sks',
+                }, {
+                    data: 'dosen_pengampu',
                 }, {
                     data: 'created_at'
                 }, {

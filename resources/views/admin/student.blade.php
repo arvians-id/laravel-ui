@@ -4,9 +4,9 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <a href="{{ route('program-studies.create') }}" class="btn btn-primary mb-2">Tambah</a>
+                <a href="{{ route('students.create') }}" class="btn btn-primary mb-2">Tambah</a>
                 <div class="card">
-                    <div class="card-header">{{ __('Data Program Studi') }}</div>
+                    <div class="card-header">{{ __('Data Mahasiswa') }}</div>
                     <div class="card-body">
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">
@@ -16,10 +16,10 @@
                         <table id="myTable" class="table table-striped table-bordered display nowrap" style="width:100%">
                             <thead>
                                 <tr>
+                                    <th>Nama</th>
+                                    <th>NIM</th>
                                     <th>Fakultas</th>
                                     <th>Program Studi</th>
-                                    <th>Dibuat</th>
-                                    <th>Terakhir diubah</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -33,6 +33,7 @@
         </div>
     </div>
 @endsection
+
 
 @push('css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
@@ -51,17 +52,17 @@
                 serverSide: true,
                 processing: true,
                 ajax: {
-                    url: "{{ route('program-studies.index') }}",
+                    url: "{{ route('students.index') }}",
                     type: 'GET'
                 },
                 columns: [{
-                    data: 'fakultas'
+                    data: 'name',
                 }, {
-                    data: 'program_studi'
+                    data: 'nim',
                 }, {
-                    data: 'created_at'
+                    data: 'fakultas',
                 }, {
-                    data: 'updated_at'
+                    data: 'program_studi',
                 }, {
                     data: 'deleted_at'
                 }, {
