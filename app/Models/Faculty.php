@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,11 +12,11 @@ class Faculty extends Model
 
     public $fillable = ['fakultas'];
 
-    public function program_study()
+    public function program_studies()
     {
         return $this->hasMany(ProgramStudy::class);
     }
-    public function profil_user()
+    public function profil_users()
     {
         return $this->hasMany(ProfileUser::class);
     }

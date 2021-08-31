@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,11 +17,11 @@ class ProgramStudy extends Model
     {
         return $this->belongsTo(Faculty::class)->withTrashed();
     }
-    public function course()
+    public function courses()
     {
         return $this->hasMany(Course::class);
     }
-    public function profil_user()
+    public function profil_users()
     {
         return $this->hasMany(ProfileUser::class);
     }

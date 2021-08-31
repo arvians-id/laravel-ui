@@ -4,60 +4,60 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <a href="{{ route('courses.index') }}" class="btn btn-primary mb-2">Lihat Data</a>
+                <a href="{{ route('students.index') }}" class="btn btn-primary mb-2">Lihat Data</a>
                 <div class="card">
-                    <div class="card-header">{{ __('Tambah Data Mata Kuliah') }}</div>
+                    <div class="card-header">{{ __('Tambah Data Mahasiswa') }}</div>
                     <div class="card-body">
                         @if (session('status'))
                             <div class="alert alert-success" role="alert">
                                 {{ session('status') }}
                             </div>
                         @endif
-                        <form
-                            action="{{ isset($course) ? route('courses.update', ['course' => $course->id]) : route('courses.store') }}"
-                            method="POST">
-                            @isset($course) @method('PUT') @endisset
+                        <form action="{{ route('students.store') }}" method="POST">
                             @csrf
+                            <div class="form-group">
+                                <label>Fakultas</label>
+                                <select class="form-control @error('faculty_id') is-invalid @enderror" name="faculty_id">
+                                    <option value="" selected disabled>Pilih</option>
+                                    @foreach ($faculties as $faculty)
+                                        <option value="{{ $faculty->id }}"
+                                            {{ old('faculty_id') == $faculty->id ? 'selected' : '' }}>
+                                            {{ $faculty->fakultas }}</option>
+                                    @endforeach
+                                </select>
+                                <x-validation-single field="faculty_id"></x-validation-single>
+                            </div>
                             <div class="form-group">
                                 <label>Program Studi</label>
                                 <select class="form-control @error('program_study_id') is-invalid @enderror"
                                     name="program_study_id">
                                     <option value="" selected disabled>Pilih</option>
-                                    @foreach ($programStudies as $programStudy)
-                                        <option value="{{ $programStudy->id }}"
-                                            {{ isset($course) ? ($programStudy->id == $course->program_study_id ? 'selected' : '') : '' }}
-                                            {{ old('program_study_id') == $programStudy->id ? 'selected' : '' }}>
-                                            {{ $programStudy->program_studi }}</option>
-                                    @endforeach
                                 </select>
                                 <x-validation-single field="program_study_id"></x-validation-single>
                             </div>
                             <div class="form-group">
-                                <label>Kode Mata Kuliah</label>
-                                <input type="text" name="kode_matkul"
-                                    class="form-control @error('kode_matkul') is-invalid @enderror"
-                                    value="{{ old('kode_matkul', isset($course) ? $course->kode_matkul : '') }}">
-                                <x-validation-single field="kode_matkul"></x-validation-single>
+                                <label>Nama Mahasiswa</label>
+                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                                    value="{{ old('name') }}">
+                                <x-validation-single field="name"></x-validation-single>
                             </div>
                             <div class="form-group">
-                                <label>Mata Kuliah</label>
-                                <input type="text" name="mata_kuliah"
-                                    class="form-control @error('mata_kuliah') is-invalid @enderror"
-                                    value="{{ old('mata_kuliah', isset($course) ? $course->mata_kuliah : '') }}">
-                                <x-validation-single field="mata_kuliah"></x-validation-single>
+                                <label>NIM</label>
+                                <input type="number" name="nim" class="form-control @error('nim') is-invalid @enderror"
+                                    value="{{ old('nim') }}">
+                                <x-validation-single field="nim"></x-validation-single>
                             </div>
                             <div class="form-group">
-                                <label>SKS</label>
-                                <input type="number" name="sks" class="form-control @error('sks') is-invalid @enderror"
-                                    value="{{ old('sks', isset($course) ? $course->sks : '') }}">
-                                <x-validation-single field="sks"></x-validation-single>
+                                <label>Email</label>
+                                <input type="text" name="email" class="form-control @error('email') is-invalid @enderror"
+                                    value="{{ old('email') }}">
+                                <x-validation-single field="email"></x-validation-single>
                             </div>
                             <div class="form-group">
-                                <label>Dosen Pengampu</label>
-                                <input type="text" name="dosen_pengampu"
-                                    class="form-control @error('dosen_pengampu') is-invalid @enderror"
-                                    value="{{ old('dosen_pengampu', isset($course) ? $course->dosen_pengampu : '') }}">
-                                <x-validation-single field="dosen_pengampu"></x-validation-single>
+                                <label>Password</label>
+                                <input type="password" name="password"
+                                    class="form-control @error('password') is-invalid @enderror">
+                                <x-validation-single field="password"></x-validation-single>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
@@ -67,3 +67,28 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script>
+        $(function() {
+            $('[name="faculty_id"]').on('change', function(e) {
+                let id = $(this).val();
+                $.ajax({
+                    url: "{{ route('students.show-ajax') }}",
+                    type: 'POST',
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        let data = '<option value="" selected disabled>Pilih</option>';
+                        $.each(response.data, (key, value) => {
+                            data +=
+                                `<option value="${value.id}">${value.program_studi}</option>`;
+                        })
+                        $('[name="program_study_id"]').html(data);
+                    }
+                });
+            })
+        });
+    </script>
+@endpush

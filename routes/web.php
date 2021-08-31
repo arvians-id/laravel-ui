@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\Admin\{DashboardController, CourseController, FacultyController, KrsController, ProgramStudyController, SchoolYearController, StudentController};
+use App\Models\ProgramStudy;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\{DashboardController, CourseController, FacultyController, KrsController, ProgramStudyController, SchoolYearController, StudentController};
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +26,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::middleware(['role:administrator'])->group(function () {
-        Route::resource('students', StudentController::class);
+        Route::post('/students/show-studies', function (Request $request) {
+            if ($request->ajax()) {
+                $programStudies['data'] = ProgramStudy::where('faculty_id', $request->id)->get();
+
+                echo json_encode($programStudies);
+            }
+        })->name('students.show-ajax');
+
+        Route::delete('/students/restore/{student}', [StudentController::class, 'restore'])->name('students.restore');
+        Route::resource('students', StudentController::class)->except(['edit', 'update']);
         Route::delete('/faculties/restore/{faculty}', [FacultyController::class, 'restore'])->name('faculties.restore');
         Route::resource('faculties', FacultyController::class)->except(['show']);
         Route::delete('/program-studies/restore/{program_study}', [ProgramStudyController::class, 'restore'])->name('program-studies.restore');

@@ -10,6 +10,7 @@ use App\Observers\UserObserver;
 use App\Observers\FacultyObserver;
 use App\Observers\SchoolYearObserver;
 use App\Observers\ProgramStudyObserver;
+use App\Observers\StudentObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

@@ -26,6 +26,6 @@ class FacultyObserver
      */
     public function deleted(Faculty $faculty)
     {
-        $faculty->program_study()->delete();
+        $faculty->program_studies()->delete();
     }
 }

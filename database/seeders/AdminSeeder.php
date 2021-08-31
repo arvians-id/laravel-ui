@@ -16,16 +16,12 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::create([
+        User::create([
             'nim' => '1010101010',
             'name' => 'Admin',
             'email' => 'admin@widdyarfian.com',
             'email_verified_at' => Carbon::now(),
             'password' => Hash::make('Rahasia123'),
         ]);
-
-        $user->assignRole('administrator');
-
-        $user->profil_user()->create();
     }
 }
