@@ -17,6 +17,7 @@ class CreateCourseUsersTable extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('school_year_id')->constrained('school_years')->onDelete('cascade')->onUpdate('cascade');
+            $table->timestamp('disetujui')->nullable();
             $table->primary(['user_id', 'course_id', 'school_year_id']);
         });
     }

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Models\Faculty;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
-use App\Models\Faculty;
+use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
@@ -78,11 +80,19 @@ class StudentController extends Controller
             'password' => 'required'
         ]);
 
-        $user = User::create($forms);
-        $user->profil_user()->create([
-            'faculty_id' => $request->faculty_id,
-            'program_study_id' => $request->program_study_id,
-        ]);
+        User::withoutEvents(function () use ($request, $forms) {
+            $forms['name'] =  Str::title($request->name);
+            $forms['email'] = Str::lower($request->email);
+            $forms['password'] = Hash::make($request->password);
+            $user = User::create($forms);
+
+            $user->profil_user()->create([
+                'faculty_id' => $request->faculty_id,
+                'program_study_id' => $request->program_study_id,
+            ]);
+
+            $user->assignRole('mahasiswa');
+        });
 
         return redirect()->route('students.index')->with('status', 'Data berhasil ditambahkan!');
     }

@@ -28,10 +28,10 @@
             <a class="nav-link" href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">{{ __('Profil') }}</a>
+            <a class="nav-link" href="">{{ __('Profil') }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">{{ __('KRS') }}</a>
+            <a class="nav-link" href="{{ route('study-plan-mahasiswa.index') }}">{{ __('KRS') }}</a>
         </li>
         @endrole
 

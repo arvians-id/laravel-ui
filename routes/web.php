@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{DashboardController, CourseController, FacultyController, KrsController, ProgramStudyController, SchoolYearController, StudentController};
+use App\Http\Controllers\Mahasiswa\KrsConstroller as KrsMahasiswa;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +34,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 echo json_encode($programStudies);
             }
         })->name('students.show-ajax');
-
         Route::delete('/students/restore/{student}', [StudentController::class, 'restore'])->name('students.restore');
         Route::resource('students', StudentController::class)->except(['edit', 'update']);
         Route::delete('/faculties/restore/{faculty}', [FacultyController::class, 'restore'])->name('faculties.restore');
@@ -48,6 +48,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::middleware(['role:mahasiswa'])->group(function () {
-        Route::get('/mahasiswa', fn () => 'asu')->name('mahasiswa');
+        Route::resource('study-plan-mahasiswa', KrsMahasiswa::class);
     });
 });
