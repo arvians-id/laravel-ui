@@ -18,6 +18,7 @@ class CreateCoursesTable extends Migration
             $table->foreignId('program_study_id')->constrained('program_studies')->onDelete('cascade')->onUpdate('cascade');
             $table->string('kode_matkul', 20);
             $table->string('mata_kuliah', 40);
+            $table->string('semester', 10);
             $table->integer('sks');
             $table->string('dosen_pengampu', 50);
             $table->timestamps();

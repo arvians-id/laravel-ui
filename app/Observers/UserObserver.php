@@ -30,6 +30,7 @@ class UserObserver
      */
     public function creating(User $user)
     {
-        $user->password = Hash::make($user->password);
+        if ($user->nim != '1010101010')
+            $user->password = Hash::make($user->password);
     }
 }

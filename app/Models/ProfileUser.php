@@ -20,10 +20,10 @@ class ProfileUser extends Model
     }
     public function faculty()
     {
-        return $this->belongsTo(Faculty::class);
+        return $this->belongsTo(Faculty::class)->withDefault();
     }
     public function program_study()
     {
-        return $this->belongsTo(ProgramStudy::class);
+        return $this->belongsTo(ProgramStudy::class)->withDefault();
     }
 }

@@ -23,6 +23,9 @@ class CourseController extends Controller
                 ->addColumn('program_studi', function ($query) {
                     return $query->program_study->program_studi;
                 })
+                ->addColumn('kode_matkul', function ($query) {
+                    return 'MK' . str_pad($query->kode_matkul, 5, '0', STR_PAD_LEFT);
+                })
                 ->addColumn('created_at', function ($query) {
                     return $query->created_at->format('d F Y h:i:s');
                 })
@@ -68,8 +71,8 @@ class CourseController extends Controller
     {
         $forms = $request->validate([
             'program_study_id' => 'required',
-            'kode_matkul' => 'required|unique:courses',
             'mata_kuliah' => 'required|unique:courses',
+            'semester' => 'required',
             'sks' => 'required|numeric',
             'dosen_pengampu' => 'required',
         ]);
@@ -101,15 +104,14 @@ class CourseController extends Controller
     {
         $forms = $request->validate([
             'program_study_id' => 'required',
-            'kode_matkul' => 'required|unique:courses,kode_matkul,' . $course->id,
             'mata_kuliah' => 'required|unique:courses,mata_kuliah,' . $course->id,
+            'semester' => 'required',
             'sks' => 'required|numeric',
             'dosen_pengampu' => 'required',
-            'fakultas' => 'required|unique:courses'
         ]);
 
         Course::findOrFail($course->id)->update($forms);
-        return redirect()->route('faculties.index')->with('status', 'Data berhasil diubah!');
+        return redirect()->route('courses.index')->with('status', 'Data berhasil diubah!');
     }
 
     /**

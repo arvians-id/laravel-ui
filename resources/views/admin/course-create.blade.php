@@ -33,18 +33,18 @@
                                 <x-validation-single field="program_study_id"></x-validation-single>
                             </div>
                             <div class="form-group">
-                                <label>Kode Mata Kuliah</label>
-                                <input type="text" name="kode_matkul"
-                                    class="form-control @error('kode_matkul') is-invalid @enderror"
-                                    value="{{ old('kode_matkul', isset($course) ? $course->kode_matkul : '') }}">
-                                <x-validation-single field="kode_matkul"></x-validation-single>
-                            </div>
-                            <div class="form-group">
                                 <label>Mata Kuliah</label>
                                 <input type="text" name="mata_kuliah"
                                     class="form-control @error('mata_kuliah') is-invalid @enderror"
                                     value="{{ old('mata_kuliah', isset($course) ? $course->mata_kuliah : '') }}">
                                 <x-validation-single field="mata_kuliah"></x-validation-single>
+                            </div>
+                            <div class="form-group">
+                                <label>Semester</label>
+                                <input type="number" name="semester"
+                                    class="form-control @error('semester') is-invalid @enderror"
+                                    value="{{ old('semester', isset($course) ? $course->semester : '') }}">
+                                <x-validation-single field="semester"></x-validation-single>
                             </div>
                             <div class="form-group">
                                 <label>SKS</label>

@@ -19,6 +19,7 @@
                                     <th>Program Study</th>
                                     <th>Kode Matkul</th>
                                     <th>Mata Kuliah</th>
+                                    <th>Semester</th>
                                     <th>SKS</th>
                                     <th>Dosen Pengampu</th>
                                     <th>Dibuat</th>
@@ -64,6 +65,8 @@
                     data: 'kode_matkul',
                 }, {
                     data: 'mata_kuliah',
+                }, {
+                    data: 'semester',
                 }, {
                     data: 'sks',
                 }, {

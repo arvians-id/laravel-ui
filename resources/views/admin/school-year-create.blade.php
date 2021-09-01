@@ -20,7 +20,7 @@
                             @csrf
                             <div class="form-group">
                                 <label>Tahun Ajaran</label>
-                                <input type="number" name="tahun_ajaran"
+                                <input type="text" name="tahun_ajaran"
                                     class="form-control @error('tahun_ajaran') is-invalid @enderror"
                                     value="{{ old('tahun_ajaran', isset($schoolYear) ? $schoolYear->tahun_ajaran : '') }}">
                                 <x-validation-single field="tahun_ajaran"></x-validation-single>
