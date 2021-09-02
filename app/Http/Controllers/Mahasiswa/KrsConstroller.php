@@ -19,21 +19,12 @@ class KrsConstroller extends Controller
     public function index()
     {
         $program_studi = ProfileUser::where('program_study_id', Auth::user()->profil_user->program_study_id)->first();
-        $courses = Course::where('program_study_id', $program_studi->program_study_id)->get();
+        $courses = Course::where('program_study_id', $program_studi->program_study_id)->latest()->get();
 
-        $test = Course::with(['course_user'])->get();
-        dd($test);
-        return view('mahasiswa.krs', compact('courses'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $course_users = Course::whereHas('course_user', function ($query) {
+            $query->where('user_id', Auth::id());
+        })->get();
+        return view('mahasiswa.krs', compact('courses', 'course_users'));
     }
 
     /**
@@ -44,41 +35,9 @@ class KrsConstroller extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        $krs = Course::findOrFail($request->course_id);
+        $krs->course_user()->sync(['user_id' => Auth::id()]);
+        return back()->with('status', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -89,6 +48,8 @@ class KrsConstroller extends Controller
      */
     public function destroy($id)
     {
-        //
+        $krs = Course::findOrFail($id);
+        $krs->course_user()->detach();
+        return back()->with('status', 'Data berhasil dihapus');
     }
 }

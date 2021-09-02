@@ -48,6 +48,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::middleware(['role:mahasiswa'])->group(function () {
-        Route::resource('study-plan-mahasiswa', KrsMahasiswa::class);
+        Route::resource('study-plan-mahasiswa', KrsMahasiswa::class)->except(['create', 'show', 'update', 'edit']);
     });
 });
