@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
 use App\Models\SchoolYear;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -63,10 +64,11 @@ class SchoolYearController extends Controller
     {
         $forms = $request->validate([
             'tahun_ajaran' => 'required',
-            'semester' => 'required|numeric',
+            'semester' => 'required|numeric|unique:school_years,semester,NULL,id,tahun_ajaran,' . $request->tahun_ajaran,
         ]);
 
-        SchoolYear::create($forms);
+        $schoolYear = SchoolYear::create($forms);
+        $schoolYear->school_year_user()->attach(User::withTrashed()->role('mahasiswa')->get()->pluck('id'));
         return redirect()->route('school-years.index')->with('status', 'Data berhasil ditambahkan!');
     }
 
@@ -92,7 +94,7 @@ class SchoolYearController extends Controller
     {
         $forms = $request->validate([
             'tahun_ajaran' => 'required',
-            'semester' => 'required|numeric',
+            'semester' => 'required|numeric|unique:school_years,semester,NULL,id,tahun_ajaran,' . $request->tahun_ajaran,
         ]);
 
         SchoolYear::findOrFail($schoolYear->id)->update($forms);

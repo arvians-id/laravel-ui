@@ -14,9 +14,10 @@ class CreateCourseUsersTable extends Migration
     public function up()
     {
         Schema::create('course_user', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('school_year_id')->constrained('school_years')->onDelete('cascade')->onUpdate('cascade');
+            $table->primary(['user_id', 'course_id', 'school_year_id']);
         });
     }
 
@@ -27,6 +28,6 @@ class CreateCourseUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('course_users');
+        Schema::dropIfExists('course_user');
     }
 }

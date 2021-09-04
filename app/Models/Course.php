@@ -23,6 +23,10 @@ class Course extends Model
     }
     public function course_user()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)->withPivot(['school_year_id']);
+    }
+    public function school_user()
+    {
+        return $this->belongsToMany(SchoolYear::class);
     }
 }

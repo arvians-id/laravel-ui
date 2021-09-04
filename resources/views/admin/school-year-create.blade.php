@@ -14,7 +14,7 @@
                             </div>
                         @endif
                         <form
-                            action="{{ isset($schoolYear) ? route('school-years.update', ['program_study' => $schoolYear->id]) : route('school-years.store') }}"
+                            action="{{ isset($schoolYear) ? route('school-years.update', ['school_year' => $schoolYear->id]) : route('school-years.store') }}"
                             method="POST">
                             @isset($schoolYear) @method('PUT') @endisset
                             @csrf

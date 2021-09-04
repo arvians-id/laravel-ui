@@ -13,11 +13,11 @@ class CreateCourseUserPlansTable extends Migration
      */
     public function up()
     {
-        Schema::create('course_user_plans', function (Blueprint $table) {
-            $table->id();
+        Schema::create('school_year_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('school_year_id')->constrained('school_years')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamp('disetujui')->nullable();
+            $table->primary(['user_id', 'school_year_id']);
         });
     }
 
@@ -28,6 +28,6 @@ class CreateCourseUserPlansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('course_user_plans');
+        Schema::dropIfExists('school_year_user');
     }
 }

@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="container">
+        <p>Tahun Ajaran {{ $school_years->tahun_ajaran }}, Semester {{ $school_years->semester }}</p>
         <div class="row justify-content-center">
             <div class="col-12 col-md-6 mb-2">
                 <div class="card">
@@ -39,6 +40,7 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        {!! $school_year_user->pivot->disetujui ? 'KRS Disetujui <i class="far fa-check-circle text-success"></i>' : 'KRS Belum Disetujui <i class="far fa-times-circle text-danger"></i>' !!}
                     </div>
                 </div>
             </div>
@@ -61,11 +63,13 @@
                                 @forelse ($courses as $course)
                                     <tr>
                                         <td>
-                                            <form action="{{ route('study-plan-mahasiswa.store') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="course_id" value="{{ $course->id }}">
-                                                <button class="btn btn-success btn-sm">+</button>
-                                            </form>
+                                            @can('create', $course)
+                                                <form action="{{ route('study-plan-mahasiswa.store') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                                                    <button class="btn btn-success btn-sm">+</button>
+                                                </form>
+                                            @endcan
                                         </td>
                                         <td class="text-center">{{ $course->semester }}</td>
                                         <td>{{ $course->kode_matkul }}</td>
@@ -86,3 +90,6 @@
         </div>
     </div>
 @endsection
+@push('css')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+@endpush

@@ -7,12 +7,12 @@ use App\Models\SchoolYear;
 class SchoolYearObserver
 {
     /**
-     * Handle the SchoolYear "saved" event.
+     * Handle the SchoolYear "created" event.
      *
      * @param  \App\Models\SchoolYear  $schoolYear
      * @return void
      */
-    public function saved(SchoolYear $schoolYear)
+    public function created(SchoolYear $schoolYear)
     {
         $schoolYear->delete();
     }
