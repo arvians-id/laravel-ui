@@ -16,7 +16,7 @@ class SchoolYear extends Model
     {
         return $this->belongsToMany(Course::class);
     }
-    public function school_year_user()
+    public function users()
     {
         return $this->belongsToMany(User::class)->withPivot('disetujui');
     }

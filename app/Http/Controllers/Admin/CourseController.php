@@ -24,7 +24,7 @@ class CourseController extends Controller
                     return $query->program_study->program_studi;
                 })
                 ->addColumn('kode_matkul', function ($query) {
-                    return 'MK' . str_pad($query->kode_matkul, 5, '0', STR_PAD_LEFT);
+                    return $query->kode_matkul;
                 })
                 ->addColumn('created_at', function ($query) {
                     return $query->created_at->format('d F Y h:i:s');
@@ -42,7 +42,7 @@ class CourseController extends Controller
                                 <button class="btn btn-danger btn-sm">' . ($query->trashed() ? "Aktifkan" : "Nonaktifkan") . '</button>
                             </form>';
 
-                    return $btn;
+                    return $query->program_study->trashed() ? 'Program Studi Dinonaktifkan' : $btn;
                 })
                 ->rawColumns(['aksi'])
                 ->toJson();
@@ -133,11 +133,9 @@ class CourseController extends Controller
      * @param  \App\Models\Course  $course
      * @return \Illuminate\Http\Response
      */
-    public function restore($course)
+    public function restore(Course $course)
     {
-        Course::where('id', $course)->restore();
-
-        // ProgramStudy::where('course_id', $course)->restore();
+        Course::where('id', $course->id)->restore();
 
         return back()->with('status', 'Data berhasil diaktifkan!');
     }

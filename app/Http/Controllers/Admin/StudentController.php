@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use App\Models\Faculty;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
@@ -80,19 +78,12 @@ class StudentController extends Controller
             'password' => 'required'
         ]);
 
-        User::withoutEvents(function () use ($request, $forms) {
-            $forms['name'] =  Str::title($request->name);
-            $forms['email'] = Str::lower($request->email);
-            $forms['password'] = Hash::make($request->password);
-            $user = User::create($forms);
+        $user = User::create($forms);
 
-            $user->profil_user()->create([
-                'faculty_id' => $request->faculty_id,
-                'program_study_id' => $request->program_study_id,
-            ]);
-
-            $user->assignRole('mahasiswa');
-        });
+        $user->profil_user()->create([
+            'faculty_id' => $request->faculty_id,
+            'program_study_id' => $request->program_study_id,
+        ]);
 
         return redirect()->route('students.index')->with('status', 'Data berhasil ditambahkan!');
     }
@@ -127,9 +118,9 @@ class StudentController extends Controller
      * @param  \App\Models\User  $student
      * @return \Illuminate\Http\Response
      */
-    public function restore($student)
+    public function restore(User $student)
     {
-        User::where('id', $student)->restore();
+        User::where('id', $student->id)->restore();
 
         return back()->with('status', 'Data berhasil diaktifkan!');
     }

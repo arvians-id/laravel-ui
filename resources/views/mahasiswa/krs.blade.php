@@ -21,13 +21,15 @@
                                 @forelse ($course_users as $course_user)
                                     <tr>
                                         <td>
-                                            <form
-                                                action="{{ route('study-plan-mahasiswa.destroy', ['study_plan_mahasiswa' => $course_user->id]) }}"
-                                                method="POST">
-                                                @method('DELETE')
-                                                @csrf
-                                                <button class="btn btn-danger btn-sm">-</button>
-                                            </form>
+                                            @can('destroy', $course_user)
+                                                <form
+                                                    action="{{ route('study-plan-cards.destroy', ['study_plan_card' => $course_user->id]) }}"
+                                                    method="POST">
+                                                    @method('DELETE')
+                                                    @csrf
+                                                    <button class="btn btn-danger btn-sm">-</button>
+                                                </form>
+                                            @endcan
                                         </td>
                                         <td class="text-center">{{ $course_user->semester }}</td>
                                         <td>{{ $course_user->kode_matkul }}</td>
@@ -64,7 +66,7 @@
                                     <tr>
                                         <td>
                                             @can('create', $course)
-                                                <form action="{{ route('study-plan-mahasiswa.store') }}" method="POST">
+                                                <form action="{{ route('study-plan-cards.store') }}" method="POST">
                                                     @csrf
                                                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                                                     <button class="btn btn-success btn-sm">+</button>

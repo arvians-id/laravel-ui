@@ -124,9 +124,9 @@ class ProgramStudyController extends Controller
      * @param  \App\Models\ProgramStudy  $programStudy
      * @return \Illuminate\Http\Response
      */
-    public function restore($programStudy)
+    public function restore(ProgramStudy $programStudy)
     {
-        ProgramStudy::where('id', $programStudy)->restore();
+        ProgramStudy::where('id', $programStudy->id)->restore();
 
         return back()->with('status', 'Data berhasil diaktifkan!');
     }

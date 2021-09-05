@@ -2,7 +2,6 @@
 
 namespace App\Observers;
 
-use App\Models\ProfileUser;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -21,8 +20,6 @@ class UserObserver
 
         $user->name = Str::title($user->name);
         $user->email = Str::lower($user->email);
-
-        $user->profil_user()->create();
     }
     /**
      * Handle the User "creating" event.

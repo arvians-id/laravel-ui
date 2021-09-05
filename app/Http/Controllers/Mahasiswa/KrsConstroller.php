@@ -6,6 +6,7 @@ use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\SchoolYear;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class KrsConstroller extends Controller
@@ -21,12 +22,12 @@ class KrsConstroller extends Controller
         $courses = Course::where('program_study_id', Auth::user()->profil_user->program_study_id)->latest()->get();
 
         // Cek TA & Semester
-        $school_years = SchoolYear::with('school_year_user')->first();
+        $school_years = SchoolYear::with('users')->first();
         // Cek Setujui
-        $school_year_user = $school_years->school_year_user()->where('user_id', Auth::id())->first();
+        $school_year_user = $school_years->users()->where('user_id', Auth::id())->first();
 
         // Ambil Data Mata Kuliah User
-        $course_users = Course::whereHas('course_user', function ($query) {
+        $course_users = Course::whereHas('users', function ($query) {
             $query->where('user_id', Auth::id())->where('school_year_id', SchoolYear::first()->id);
         })->get();
 
@@ -41,10 +42,10 @@ class KrsConstroller extends Controller
      */
     public function store(Request $request)
     {
-        $course = Course::with('course_user')->findOrFail($request->course_id);
+        $course = Course::with('users')->findOrFail($request->course_id);
         $this->authorize('create', $course);
 
-        $course->course_user()->attach([Auth::id() => ['school_year_id' => SchoolYear::first()->id]]);
+        $course->users()->attach([Auth::id() => ['school_year_id' => SchoolYear::first()->id]]);
         return back()->with('status', 'Data berhasil ditambahkan');
     }
 
@@ -56,8 +57,11 @@ class KrsConstroller extends Controller
      */
     public function destroy($id)
     {
+        $user = User::findOrFail(Auth::id());
+        $this->authorize('destroy', $user);
+
         $krs = Course::findOrFail($id);
-        $krs->course_user()->wherePivot('user_id', Auth::id())->wherePivot('school_year_id', SchoolYear::first()->id)->detach();
+        $krs->users()->wherePivot('user_id', Auth::id())->wherePivot('school_year_id', SchoolYear::first()->id)->detach();
         return back()->with('status', 'Data berhasil dihapus');
     }
 }

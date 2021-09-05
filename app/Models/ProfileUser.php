@@ -12,8 +12,6 @@ class ProfileUser extends Model
     public $timestamps = false;
     protected $fillable = ['user_id', 'tanggal_lahir', 'faculty_id', 'program_study_id', 'jenis_kelamin', 'no_hp', 'photo'];
 
-    protected $with = ['faculty'];
-
     public function user()
     {
         return $this->belongsTo(User::class);

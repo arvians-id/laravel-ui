@@ -15,13 +15,10 @@
             <a class="nav-link" href="{{ route('program-studies.index') }}">{{ __('Program Studi') }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('school-years.index') }}">{{ __('Tahun Ajaran') }}</a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link" href="{{ route('courses.index') }}">{{ __('Mata Kuliah') }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('study-plan-cards.index') }}">{{ __('KRS') }}</a>
+            <a class="nav-link" href="{{ route('school-years.index') }}">{{ __('Tahun Ajaran') }}</a>
         </li>
         @elserole('mahasiswa')
         <li class="nav-item">
@@ -31,7 +28,7 @@
             <a class="nav-link" href="">{{ __('Profil') }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('study-plan-mahasiswa.index') }}">{{ __('KRS') }}</a>
+            <a class="nav-link" href="{{ route('study-plan-cards.index') }}">{{ __('KRS') }}</a>
         </li>
         @endrole
 

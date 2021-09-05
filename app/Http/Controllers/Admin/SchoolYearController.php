@@ -30,8 +30,9 @@ class SchoolYearController extends Controller
                     return $query->deleted_at == null ? 'Aktif' : 'Tidak Aktif';
                 })
                 ->addColumn('aksi', function ($query) {
-                    $btnUbah = '<a href="' . route('school-years.edit', ['school_year' => $query->id]) . '" class="btn btn-warning btn-sm">Ubah</a>';
-                    $btn = ($query->trashed() ? null : $btnUbah) . '<form action="' . route($query->trashed() ? 'school-years.restore' : 'school-years.destroy', ['school_year' => $query->id]) . '" class="d-inline" method="POST">
+                    $btnUbahDetail = '<a href="' . route('school-years.show', ['school_year' => $query->id]) . '" class="btn btn-primary btn-sm">Detail</a>
+                    <a href="' . route('school-years.edit', ['school_year' => $query->id]) . '" class="btn btn-warning btn-sm">Ubah</a>';
+                    $btn = ($query->trashed() ? '' : $btnUbahDetail) . '<form action="' . route($query->trashed() ? 'school-years.restore' : 'school-years.destroy', ['school_year' => $query->id]) . '" class="d-inline" method="POST">
                             ' . method_field('DELETE') . csrf_field() . '
                                 <button class="btn btn-danger btn-sm">' . ($query->trashed() ? "Aktifkan" : "Nonaktifkan") . '</button>
                             </form>';
@@ -40,7 +41,52 @@ class SchoolYearController extends Controller
                 ->rawColumns(['aksi'])
                 ->toJson();
         }
-        return view('admin.school-year', compact($schoolYears));
+        return view('admin.school-year');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\SchoolYear  $schoolYear
+     * @return \Illuminate\Http\Response
+     */
+    public function show(SchoolYear $schoolYear, Request $request)
+    {
+        if ($request->ajax()) {
+            return DataTables::of($schoolYear->users)
+                ->addColumn('nama', function ($query) {
+                    return $query->name;
+                })
+                ->addColumn('fakultas', function ($query) {
+                    return $query->profil_user->faculty->fakultas;
+                })
+                ->addColumn('program_studi', function ($query) {
+                    return $query->profil_user->program_study->program_studi;
+                })
+                ->addColumn('aksi', function ($query) {
+                    $btn = '<form action="' . route('school-years.setujui', ['school_year' => $query->pivot->school_year_id, 'user' => $query->id]) . '" method="POST">
+                            ' . csrf_field() . '
+                                <button class="btn btn-success btn-sm">Setujui</button>
+                            </form>';
+
+                    return $query->pivot->disetujui == null ? $btn : '<i class="far fa-check-circle text-success"></i>';
+                })
+                ->rawColumns(['aksi'])
+                ->toJson();
+        }
+        return view('admin.krs');
+    }
+
+    /**
+     * Setujui the specified resource from storage.
+     *
+     * @param  \App\Models\SchoolYear  $schoolYear
+     * @return \Illuminate\Http\Response
+     */
+    public function setujui(SchoolYear $school_year, User $user)
+    {
+        $school_year->users()->updateExistingPivot($user->id, ['disetujui' => date('Y-m-d h:i:s')]);
+        return back()->with('status', 'Data berhasil disetujui');
     }
 
     /**
@@ -115,16 +161,15 @@ class SchoolYearController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Restore the specified resource from storage.
      *
      * @param  \App\Models\SchoolYear  $schoolYear
      * @return \Illuminate\Http\Response
      */
-    public function restore($schoolYear)
+    public function restore(SchoolYear $schoolYear)
     {
-
         SchoolYear::whereNull('deleted_at')->delete();
-        SchoolYear::where('id', $schoolYear)->restore();
+        SchoolYear::where('id', $schoolYear->id)->restore();
 
         return back()->with('status', 'Data berhasil diaktifkan!');
     }

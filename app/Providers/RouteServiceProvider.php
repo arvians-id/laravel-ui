@@ -2,11 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use App\Models\{User, Course, Faculty, ProgramStudy, SchoolYear};
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -46,6 +47,27 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
+        });
+
+        Route::bind('course', function ($course) { {
+                return Course::withTrashed()->findOrFail($course);
+            }
+        });
+        Route::bind('faculty', function ($faculty) { {
+                return Faculty::withTrashed()->findOrFail($faculty);
+            }
+        });
+        Route::bind('program_study', function ($program_study) { {
+                return ProgramStudy::withTrashed()->findOrFail($program_study);
+            }
+        });
+        Route::bind('school_year', function ($school_year) { {
+                return SchoolYear::withTrashed()->findOrFail($school_year);
+            }
+        });
+        Route::bind('student', function ($student) { {
+                return User::withTrashed()->findOrFail($student);
+            }
         });
     }
 

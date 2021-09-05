@@ -46,8 +46,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    protected $with = ['profil_user'];
-
     public function profil_user()
     {
         return $this->hasOne(ProfileUser::class);
@@ -58,6 +56,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function school_years()
     {
-        return $this->belongsToMany(SchoolYear::class);
+        return $this->belongsToMany(SchoolYear::class)->withPivot('disetujui');
     }
 }

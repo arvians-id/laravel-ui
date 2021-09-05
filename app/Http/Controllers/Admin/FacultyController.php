@@ -112,16 +112,16 @@ class FacultyController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Restore the specified resource from storage.
      *
      * @param  \App\Models\Faculty  $faculty
      * @return \Illuminate\Http\Response
      */
-    public function restore($faculty)
+    public function restore(Faculty $faculty)
     {
-        Faculty::where('id', $faculty)->restore();
+        Faculty::where('id', $faculty->id)->restore();
 
-        ProgramStudy::where('faculty_id', $faculty)->restore();
+        ProgramStudy::where('faculty_id', $faculty->id)->restore();
 
         return back()->with('status', 'Data berhasil diaktifkan!');
     }
