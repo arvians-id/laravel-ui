@@ -16,7 +16,7 @@ class Faculty extends Model
     {
         return $this->hasMany(ProgramStudy::class);
     }
-    public function profil_users()
+    public function profile_users()
     {
         return $this->hasMany(ProfileUser::class);
     }

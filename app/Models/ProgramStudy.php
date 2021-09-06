@@ -21,7 +21,7 @@ class ProgramStudy extends Model
     {
         return $this->hasMany(Course::class);
     }
-    public function profil_users()
+    public function profile_users()
     {
         return $this->hasMany(ProfileUser::class);
     }

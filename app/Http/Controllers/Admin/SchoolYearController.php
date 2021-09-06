@@ -58,10 +58,10 @@ class SchoolYearController extends Controller
                     return $query->name;
                 })
                 ->addColumn('fakultas', function ($query) {
-                    return $query->profil_user->faculty->fakultas;
+                    return $query->profile_user->faculty->fakultas;
                 })
                 ->addColumn('program_studi', function ($query) {
-                    return $query->profil_user->program_study->program_studi;
+                    return $query->profile_user->program_study->program_studi;
                 })
                 ->addColumn('aksi', function ($query) {
                     $btn = '<form action="' . route('school-years.setujui', ['school_year' => $query->pivot->school_year_id, 'user' => $query->id]) . '" method="POST">

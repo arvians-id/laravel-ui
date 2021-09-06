@@ -21,10 +21,10 @@ class StudentController extends Controller
         if ($request->ajax()) {
             return DataTables::of($students)
                 ->addColumn('fakultas', function ($query) {
-                    return $query->profil_user->faculty->fakultas;
+                    return $query->profile_user->faculty->fakultas;
                 })
                 ->addColumn('program_studi', function ($query) {
-                    return $query->profil_user->program_study->program_studi;
+                    return $query->profile_user->program_study->program_studi;
                 })
                 ->addColumn('created_at', function ($query) {
                     return $query->created_at->format('d F Y h:i:s');
@@ -80,7 +80,7 @@ class StudentController extends Controller
 
         $user = User::create($forms);
 
-        $user->profil_user()->create([
+        $user->profile_user()->create([
             'faculty_id' => $request->faculty_id,
             'program_study_id' => $request->program_study_id,
         ]);

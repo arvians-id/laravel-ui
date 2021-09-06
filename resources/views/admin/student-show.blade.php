@@ -19,17 +19,16 @@
                                 <p>Nama : {{ $student->name }}</p>
                                 <p>NIM : {{ $student->nim }}</p>
                                 <p>Email : {{ $student->email }}</p>
-                                <p>Status : {{ $student->email_verified_at ? 'Sudah Verif' : 'Belum Verif' }}</p>
-                                <p>Tanggal Lahir : {{ $student->tanggal_lahir }}</p>
+                                <p>Status : {{ $student->email_verified }}</p>
+                                <p>Tanggal Lahir : {{ $student->profile_user->tanggal_lahir }}</p>
                             </div>
                             <div class="col-6">
-                                <p>Fakultas : {{ $student->profil_user->faculty->fakultas }}</p>
-                                <p>Program Studi : {{ $student->profil_user->program_study->program_studi }}</p>
-                                <p>Jenis Kelamin : {{ $student->jenis_kelamin }}</p>
-                                <p>No Handphone : {{ $student->no_hp }}</p>
+                                <p>Fakultas : {{ $student->profile_user->faculty->fakultas }}</p>
+                                <p>Program Studi : {{ $student->profile_user->program_study->program_studi }}</p>
+                                <p>Jenis Kelamin : {{ $student->profile_user->jenis_kelamin }}</p>
+                                <p>No Handphone : {{ $student->profile_user->no_hp }}</p>
                             </div>
                         </div>
-                        <hr>
                     </div>
                 </div>
             </div>

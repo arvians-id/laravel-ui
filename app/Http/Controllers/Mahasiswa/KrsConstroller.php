@@ -19,7 +19,7 @@ class KrsConstroller extends Controller
     public function index()
     {
         // Ambil Data Mata Kuliah Sesuai Program Studi
-        $courses = Course::where('program_study_id', Auth::user()->profil_user->program_study_id)->latest()->get();
+        $courses = Course::where('program_study_id', Auth::user()->profile_user->program_study_id)->latest()->get();
 
         // Cek TA & Semester
         $school_years = SchoolYear::with('users')->first();

@@ -46,7 +46,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function profil_user()
+    // Logic
+    public function getEmailVerifiedAttribute()
+    {
+        return $this->email_verified_at ? 'Sudah Verif' : 'Belum Verif';
+    }
+    // Relation
+    public function profile_user()
     {
         return $this->hasOne(ProfileUser::class);
     }
