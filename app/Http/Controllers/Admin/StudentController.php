@@ -7,6 +7,7 @@ use App\Models\Faculty;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use App\Http\Controllers\Controller;
+use App\Models\SchoolYear;
 
 class StudentController extends Controller
 {
@@ -73,7 +74,7 @@ class StudentController extends Controller
             'faculty_id' => 'required',
             'program_study_id' => 'required',
             'name' => 'required',
-            'nim' => 'required|unique:users',
+            'nim' => 'required|digits_between:9,11|unique:users',
             'email' => 'required',
             'password' => 'required'
         ]);
@@ -84,6 +85,9 @@ class StudentController extends Controller
             'faculty_id' => $request->faculty_id,
             'program_study_id' => $request->program_study_id,
         ]);
+
+        $schoolYear = SchoolYear::withTrashed()->get();
+        $user->school_years()->attach($schoolYear->pluck('id'));
 
         return redirect()->route('students.index')->with('status', 'Data berhasil ditambahkan!');
     }

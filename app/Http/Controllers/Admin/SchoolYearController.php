@@ -71,12 +71,17 @@ class SchoolYearController extends Controller
                                 <button class="btn btn-success btn-sm">Setujui</button>
                             </form>';
 
-                    return $query->pivot->disetujui == null ? $btn : '<i class="far fa-check-circle text-success"></i>';
+                    $btnBatal = '<form action="' . route('school-years.batal-setujui', ['school_year' => $query->pivot->school_year_id, 'user' => $query->id]) . '" method="POST" class="d-inline">
+                                ' . csrf_field() . '
+                                    <button class="btn btn-danger btn-sm">Batalkan</button>
+                                </form>';
+
+                    return $query->pivot->disetujui == null ? $btn : $btnBatal . ' | <i class="far fa-check-circle text-success"></i>';
                 })
                 ->rawColumns(['aksi'])
                 ->toJson();
         }
-        return view('admin.krs');
+        return view('admin.school-year-show');
     }
 
     /**
@@ -92,6 +97,20 @@ class SchoolYearController extends Controller
         dispatch(new SendEmail($user));
 
         return back()->with('status', 'Data berhasil disetujui');
+    }
+    /**
+     * Batal Setujui the specified resource from storage.
+     *
+     * @param  \App\Models\SchoolYear  $schoolYear
+     * @return \Illuminate\Http\Response
+     */
+    public function batal_setujui(SchoolYear $school_year, User $user)
+    {
+        $school_year->users()->updateExistingPivot($user->id, ['disetujui' => null]);
+
+        dispatch(new SendEmail($user));
+
+        return back()->with('status', 'Data berhasil dibatalkan');
     }
 
     /**

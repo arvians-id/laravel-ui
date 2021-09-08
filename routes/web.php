@@ -44,6 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('program-studies', ProgramStudyController::class)->except(['show']);
 
         Route::post('/school-years/setujui/{school_year}/{user}', [SchoolYearController::class, 'setujui'])->name('school-years.setujui');
+        Route::post('/school-years/batal-setujui/{school_year}/{user}', [SchoolYearController::class, 'batal_setujui'])->name('school-years.batal-setujui');
         Route::delete('/school-years/restore/{school_year}', [SchoolYearController::class, 'restore'])->name('school-years.restore');
         Route::resource('school-years', SchoolYearController::class);
 
