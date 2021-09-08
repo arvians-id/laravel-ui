@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Faculty;
 use App\Models\ProgramStudy;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class FacultyController extends Controller
 {
@@ -106,7 +107,16 @@ class FacultyController extends Controller
      */
     public function destroy(Faculty $faculty)
     {
-        Faculty::findOrFail($faculty->id)->delete();
+        DB::beginTransaction();
+        try {
+            Faculty::findOrFail($faculty->id)->delete();
+            $faculty->program_studies()->delete();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
 
         return back()->with('status', 'Data berhasil dinonaktifkan!');
     }
@@ -119,9 +129,16 @@ class FacultyController extends Controller
      */
     public function restore(Faculty $faculty)
     {
-        Faculty::where('id', $faculty->id)->restore();
+        DB::beginTransaction();
+        try {
+            Faculty::where('id', $faculty->id)->restore();
+            ProgramStudy::where('faculty_id', $faculty->id)->restore();
 
-        ProgramStudy::where('faculty_id', $faculty->id)->restore();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
 
         return back()->with('status', 'Data berhasil diaktifkan!');
     }

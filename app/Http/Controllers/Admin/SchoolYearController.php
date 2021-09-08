@@ -6,7 +6,9 @@ use App\Models\User;
 use App\Models\SchoolYear;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmail;
 
 class SchoolYearController extends Controller
 {
@@ -86,6 +88,9 @@ class SchoolYearController extends Controller
     public function setujui(SchoolYear $school_year, User $user)
     {
         $school_year->users()->updateExistingPivot($user->id, ['disetujui' => date('Y-m-d h:i:s')]);
+
+        dispatch(new SendEmail($user));
+
         return back()->with('status', 'Data berhasil disetujui');
     }
 
@@ -113,8 +118,18 @@ class SchoolYearController extends Controller
             'semester' => 'required|numeric|unique:school_years,semester,NULL,id,tahun_ajaran,' . $request->tahun_ajaran,
         ]);
 
-        $schoolYear = SchoolYear::create($forms);
-        $schoolYear->school_year_user()->attach(User::withTrashed()->role('mahasiswa')->get()->pluck('id'));
+        DB::beginTransaction();
+        try {
+            $schoolYear = SchoolYear::create($forms);
+            $schoolYear->users()->attach(User::withTrashed()->role('mahasiswa')->get()->pluck('id'));
+            $schoolYear->delete();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
         return redirect()->route('school-years.index')->with('status', 'Data berhasil ditambahkan!');
     }
 
@@ -168,8 +183,16 @@ class SchoolYearController extends Controller
      */
     public function restore(SchoolYear $schoolYear)
     {
-        SchoolYear::whereNull('deleted_at')->delete();
-        SchoolYear::where('id', $schoolYear->id)->restore();
+        DB::beginTransaction();
+        try {
+            SchoolYear::whereNull('deleted_at')->delete();
+            SchoolYear::where('id', $schoolYear->id)->restore();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
 
         return back()->with('status', 'Data berhasil diaktifkan!');
     }

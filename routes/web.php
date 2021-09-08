@@ -55,13 +55,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::match(['get', 'post'], '/profile', ProfileController::class)->name('profile');
         Route::resource('study-plan-cards', KrsConstroller::class)->except(['create', 'show', 'update', 'edit']);
     });
-
-    Route::get('/media/{filename}', function ($filename) {
-        $path = 'images/' . $filename;
-        if (!Storage::exists($path)) {
-            abort(404);
-        }
-
-        return Storage::response($path);
-    });
 });

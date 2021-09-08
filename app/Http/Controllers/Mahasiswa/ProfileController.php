@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Models\User;
-use Illuminate\Support\Str;
+use App\Traits\FileUpload;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 
 class ProfileController extends Controller
 {
+    use FileUpload;
     /**
      * Handle the incoming request.
      *
@@ -27,29 +28,24 @@ class ProfileController extends Controller
                 'no_hp' => 'required|numeric|digits_between:9,13',
                 'photo' => 'mimes:jpg,png,jpeg|max:1080'
             ]);
-            $user = User::where('id', Auth::id())->firstOrFail();
-            $user->update(['email' => $request->email]);
 
-            $file = $request->file('photo');
-            $photo = null;
 
-            if ($request->hasFile('photo')) {
-                $namePhoto = Str::uuid() . '.' . $file->extension();
-                $file->move(public_path('storage/images'), $namePhoto);
-                $photo = $namePhoto;
+            DB::beginTransaction();
+            try {
+                $user = User::where('id', Auth::id())->firstOrFail();
+                $user->update(['email' => $request->email]);
 
-                $path = public_path('storage/images/') . Auth::user()->profile_user->photo;
-                if (File::exists($path) && Auth::user()->profile_user->photo != 'default.png') {
-                    File::delete($path);
-                }
+                $user->profile_user()->update([
+                    'tanggal_lahir' => $request->tanggal_lahir,
+                    'jenis_kelamin' => $request->jenis_kelamin,
+                    'no_hp' => $request->no_hp,
+                    'photo' => $this->withDelete() ?: Auth::user()->profile_user->photo,
+                ]);
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
             }
-
-            $user->profile_user()->update([
-                'tanggal_lahir' => $request->tanggal_lahir,
-                'jenis_kelamin' => $request->jenis_kelamin,
-                'no_hp' => $request->no_hp,
-                'photo' => $photo ?: Auth::user()->profile_user->photo,
-            ]);
 
             return back()->with('status', 'Data berhasil diubah');
         }
