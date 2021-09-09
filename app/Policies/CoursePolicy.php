@@ -21,7 +21,7 @@ class CoursePolicy
      */
     public function create(User $user, Course $course)
     {
-        return $user->school_years()->first()->pivot->disetujui ? null : !$user->courses()->where('course_id', $course->id)->where('school_year_id', SchoolYear::first()->id)->exists();
+        return $user->school_years()->first() ? ($user->school_years()->first()->pivot->disetujui ? null : !$user->courses()->where('course_id', $course->id)->where('school_year_id', SchoolYear::first()->id)->exists()) : null;
     }
     /**
      * Determine whether the user can destroy the model.

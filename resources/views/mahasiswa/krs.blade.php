@@ -2,7 +2,13 @@
 
 @section('content')
     <div class="container">
-        <p>Tahun Ajaran {{ $school_years->tahun_ajaran }}, Semester {{ $school_years->semester }}</p>
+        @if ($school_years)
+            <p>Tahun Ajaran {{ $school_years->tahun_ajaran ?? null }}, Semester
+                {{ $school_years->semester ?? null }}
+            @else
+                <small class="text-danger">Tahun Ajaran Tidak Ditemukan!</small>
+        @endif
+        </p>
         <div class="row justify-content-center">
             <div class="col-12 col-md-6 mb-2">
                 <div class="card">
@@ -42,7 +48,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                        {!! $school_year_user->pivot->disetujui ? 'KRS Disetujui <i class="far fa-check-circle text-success"></i>' : 'KRS Belum Disetujui <i class="far fa-times-circle text-danger"></i>' !!}
+                        {!! isset($school_year_user) ? ($school_year_user->pivot->disetujui ? 'KRS Disetujui <i class="far fa-check-circle text-success"></i>' : 'KRS Belum Disetujui <i class="far fa-times-circle text-danger"></i>') : null !!}
                     </div>
                 </div>
             </div>

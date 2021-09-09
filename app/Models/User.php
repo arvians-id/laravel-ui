@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
+use App\Notifications\SendResetPassword;
+use App\Notifications\SendVerificationUserRegistration;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -63,5 +64,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function school_years()
     {
         return $this->belongsToMany(SchoolYear::class)->withPivot('disetujui');
+    }
+    // Overide
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new SendResetPassword($token));
+    }
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new SendVerificationUserRegistration);
     }
 }
