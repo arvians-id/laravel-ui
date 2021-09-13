@@ -65,6 +65,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(SchoolYear::class)->withPivot('disetujui');
     }
+    public function file_temps()
+    {
+        return $this->hasMany(FileTemp::class);
+    }
     // Overide
     public function sendPasswordResetNotification($token)
     {

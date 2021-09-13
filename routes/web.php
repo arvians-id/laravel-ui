@@ -1,12 +1,9 @@
 <?php
 
-use App\Models\SchoolYear;
 use App\Models\ProgramStudy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\MediaController;
 use App\Http\Controllers\Mahasiswa\KrsConstroller;
 use App\Http\Controllers\Mahasiswa\ProfileController;
 use App\Http\Controllers\Admin\{DashboardController, CourseController, FacultyController, ProgramStudyController, SchoolYearController, StudentController};
@@ -53,7 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::middleware(['role:mahasiswa'])->group(function () {
-        Route::match(['get', 'post'], '/profile', ProfileController::class)->name('profile');
-        Route::resource('study-plan-cards', KrsConstroller::class)->except(['create', 'show', 'update', 'edit']);
+        Route::resource('study-plan-cards', KrsConstroller::class)->except(['update', 'edit']);
+        Route::resource('profiles', ProfileController::class)->except(['create', 'show', 'edit']);
     });
 });

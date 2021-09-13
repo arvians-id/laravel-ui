@@ -25,7 +25,7 @@
             <a class="nav-link" href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('profile') }}">{{ __('Profil') }}</a>
+            <a class="nav-link" href="{{ route('profiles.index') }}">{{ __('Profil') }}</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{{ route('study-plan-cards.index') }}">{{ __('KRS') }}</a>

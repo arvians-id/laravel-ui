@@ -31,8 +31,10 @@
                             </div>
                         </div>
                         <hr>
-                        <form method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('profiles.update', ['profile' => Auth::id()]) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
+                            @method('PUT')
                             <div class="form-group">
                                 <label>Email</label>
                                 <input type="text" name="email" class="form-control @error('email') is-invalid @enderror"
@@ -70,7 +72,8 @@
                             </div>
                             <div class="form-group">
                                 <label>Photo</label>
-                                <input type="file" name="photo" class="form-control @error('photo') is-invalid @enderror">
+                                <input type="file" name="photo" data-max-file-size="500KB" accept="image/png, image/jpeg"
+                                    class="@error('photo') is-invalid @enderror">
                                 <x-validation-single field="photo"></x-validation-single>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -81,3 +84,36 @@
         </div>
     </div>
 @endsection
+
+@push('css')
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+@endpush
+@push('js')
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+    <script>
+        FilePond.setOptions({
+            server: {
+                process: {
+                    url: "{{ route('profiles.store') }}",
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    }
+                },
+                revert: {
+                    url: "{{ route('profiles.destroy', ['profile' => Auth::id()]) }}",
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                        '_method': "DELETE"
+                    }
+                }
+            },
+        });
+
+        FilePond.registerPlugin(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
+        const inputElement = document.querySelector('input[type="file"]');
+        const pond = FilePond.create(inputElement);
+    </script>
+@endpush

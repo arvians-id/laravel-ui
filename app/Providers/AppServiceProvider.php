@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\ServiceProvider;
 use App\Models\{User, Course, Faculty, ProgramStudy};
 use App\Observers\{UserObserver, CourseObserver, FacultyObserver, ProgramStudyObserver};
-use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,5 +30,7 @@ class AppServiceProvider extends ServiceProvider
         ProgramStudy::observe(ProgramStudyObserver::class);
         User::observe(UserObserver::class);
         Course::observe(CourseObserver::class);
+
+        Model::preventLazyLoading(!app()->isProduction());
     }
 }

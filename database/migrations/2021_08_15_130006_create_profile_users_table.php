@@ -21,7 +21,7 @@ class CreateProfileUsersTable extends Migration
             $table->foreignId('program_study_id')->nullable()->constrained('program_studies')->onDelete('restrict')->onUpdate('cascade');
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan'])->nullable();
             $table->string('no_hp', 15)->nullable();
-            $table->string('photo', 50)->nullable();
+            $table->string('photo', 50)->default('default.png');
         });
     }
 
